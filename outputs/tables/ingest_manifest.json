@@ -1,0 +1,33 @@
+{
+  "source_file": "data/online_retail_II.xlsx",
+  "source": "UCI Machine Learning Repository, Online Retail II (id 502), CC BY 4.0",
+  "source_md5": "ed54ccfc5d358481c399cc11d0a244be",
+  "source_bytes": 45622278,
+  "landing_file": "data/landing/online_retail_II.csv",
+  "landing_bytes": 109212056,
+  "storage": "local filesystem landing folder (no HDFS)",
+  "conversion": {
+    "sheets": {
+      "Year 2009-2010": 525461,
+      "Year 2010-2011": 541910
+    },
+    "rows_written": 1067371,
+    "conversion_seconds": 81.0
+  },
+  "rows_read_by_spark": 1067371,
+  "rows_by_sheet_spark": {
+    "Year 2009-2010": 525461,
+    "Year 2010-2011": 541910
+  },
+  "schema": {
+    "invoice": "string",
+    "stock_code": "string",
+    "description": "string",
+    "quantity": "int",
+    "invoice_date": "timestamp",
+    "price": "decimal(12,3)",
+    "customer_id": "int",
+    "country": "string",
+    "source_sheet": "string"
+  }
+}

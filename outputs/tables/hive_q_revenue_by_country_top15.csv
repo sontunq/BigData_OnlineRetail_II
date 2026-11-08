@@ -1,0 +1,16 @@
+country,is_uk,customers,invoices,revenue,revenue_share_pct
+United Kingdom,True,5334,36184,16801019.39,85.53
+EIRE,False,3,581,623414.16,3.17
+Netherlands,False,22,216,549773.41,2.8
+Germany,False,107,753,383289.0,1.95
+France,False,93,598,311090.29,1.58
+Australia,False,15,89,167800.01,0.85
+Spain,False,38,144,97766.75,0.5
+Switzerland,False,22,85,94024.59,0.48
+Sweden,False,19,99,86319.14,0.44
+Denmark,False,12,42,67422.69,0.34
+Belgium,False,29,143,56993.17,0.29
+Portugal,False,23,85,47338.27,0.24
+Channel Islands,False,13,54,44030.33,0.22
+Japan,False,10,33,43023.91,0.22
+Norway,False,12,39,38575.36,0.2

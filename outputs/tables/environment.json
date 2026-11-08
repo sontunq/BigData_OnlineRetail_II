@@ -1,0 +1,15 @@
+{
+  "os": "Windows-11-10.0.22631-SP0",
+  "python": "3.12.10",
+  "java": "java version \"1.8.0_431\"",
+  "pyspark": "3.5.3",
+  "spark": "3.5.3",
+  "pandas": "3.0.2",
+  "matplotlib": "3.11.2",
+  "scikit_learn": "1.9.1",
+  "spark_master": "local[*]",
+  "catalog_implementation": "hive",
+  "warehouse_dir": "file:/D:/Big Data/warehouse",
+  "hive_smoke_test_rows": 5,
+  "hive_smoke_test_ok": true
+}

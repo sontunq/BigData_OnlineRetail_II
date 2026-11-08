@@ -1,0 +1,16 @@
+metric,score,min,max,customers
+recency_days,1,409.0,739.0,1176
+recency_days,2,187.0,408.0,1165
+recency_days,3,59.0,186.0,1181
+recency_days,4,20.0,58.0,1166
+recency_days,5,1.0,19.0,1151
+frequency,1,1.0,1.0,1613
+frequency,2,2.0,2.0,951
+frequency,3,3.0,4.0,1143
+frequency,4,5.0,8.0,1021
+frequency,5,9.0,369.0,1111
+monetary,1,-1343.24,276.56,1168
+monetary,2,276.75,592.24,1168
+monetary,3,592.51,1179.4799999999998,1167
+monetary,4,1179.79,2835.36,1168
+monetary,5,2837.3699999999994,578408.6399999998,1168

@@ -1,0 +1,13 @@
+{
+  "train_snapshot": "2010-09-01",
+  "test_snapshot": "2011-09-01",
+  "score_snapshot": "2011-12-10",
+  "lookback_days": 270,
+  "horizon_days": 90,
+  "train_customers": 3243,
+  "train_churn_rate": 0.4147,
+  "test_customers": 3251,
+  "test_churn_rate": 0.4343,
+  "score_customers": 3935,
+  "best_model_for_scoring": "random_forest"
+}

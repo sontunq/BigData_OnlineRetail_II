@@ -1,0 +1,28 @@
+{
+  "corr_monthly_profile_2010_2011_pearson": 0.959,
+  "corr_monthly_profile_2010_2011_spearman": 0.782,
+  "sep_nov_share_of_jan_nov_2010_pct": 39.4,
+  "sep_nov_share_of_jan_nov_2011_pct": 41.0,
+  "peak_month_index_2010": 1.83,
+  "peak_month_index_2011": 1.84,
+  "peak_week_2010": {
+    "iso_week": 45,
+    "revenue": 365410.93
+  },
+  "peak_week_2011": {
+    "iso_week": 46,
+    "revenue": 370649.76
+  },
+  "christmas_named_products": 193,
+  "christmas_share_max_pct": 11.7,
+  "christmas_share_max_month": "2011-11",
+  "products_analysed_min_rev": 2000.0,
+  "products_analysed": 1323,
+  "status_counts": {
+    "stable": 567,
+    "new_in_2011": 269,
+    "declining": 257,
+    "growing": 148,
+    "gone_in_2011": 82
+  }
+}

@@ -1,0 +1,10 @@
+column,dtype,null_or_blank,pct
+invoice,string,0,0.0
+stock_code,string,0,0.0
+description,string,4382,0.4105414143723223
+quantity,int,0,0.0
+invoice_date,timestamp,0,0.0
+price,"decimal(12,3)",0,0.0
+customer_id,int,243007,22.766872999172733
+country,string,0,0.0
+source_sheet,string,0,0.0

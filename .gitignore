@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# Data (download from UCI, see data/README.md) and everything derived from it
+# ---------------------------------------------------------------------------
+data/*
+!data/README.md
+
+# Hive / Spark runtime state (recreated by run_pipeline.py)
+warehouse/
+metastore/
+metastore_db/
+spark-warehouse/
+derby.log
+*.crc
+
+# Windows Hadoop helpers (download separately, see README)
+tools/
+
+# ---------------------------------------------------------------------------
+# Generated outputs that are large, duplicated elsewhere, or per-customer
+# (the pipeline recreates them; the summaries used in the report are kept)
+# ---------------------------------------------------------------------------
+outputs/dashboard/dashboard_data.json
+outputs/data_dictionary.csv
+outputs/pipeline_run_log.csv
+outputs/tables/rfm_customers.csv
+outputs/tables/kmeans_customer_assignments.csv
+outputs/tables/customer_recommendations.csv
+outputs/tables/fpgrowth_frequent_itemsets.csv
+outputs/tables/hive_q_partitions_fact.csv
+outputs/tables/dashboard_export_summary.json
+outputs/tables/*tmp*.csv
+
+# ---------------------------------------------------------------------------
+# Local working files, course material and assistant configuration
+# ---------------------------------------------------------------------------
+CLAUDE.md
+.claude/
+*.pdf
+report/*.docx~
+~$*
+
+# ---------------------------------------------------------------------------
+# Python, notebooks, editors, OS
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.env
+*.log
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

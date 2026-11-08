@@ -1,0 +1,21 @@
+{
+  "cutoff": "2011-09-01",
+  "train_customers": 5216,
+  "train_items": 4398,
+  "train_pairs": 384663,
+  "test_customers": 2957,
+  "test_pairs": 130956,
+  "warm_eval_customers": 2334,
+  "warm_customers_with_new_items": 2244,
+  "test_customers_new_in_test": 623,
+  "test_items_not_in_train_pct_of_test_items": 7.13,
+  "matrix_density_pct": 1.677,
+  "als_best_params": {
+    "rank": 100,
+    "regParam": 0.1,
+    "alpha": 1.0
+  },
+  "als_grid_size": 18,
+  "cold_start_customers": 249,
+  "runtime_seconds": 1096.9
+}

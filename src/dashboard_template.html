@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Online Retail Dashboard</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3ef; --surface: #fcfcfb; --surface-2: #f0efec; --border: #e4e3df;
+  --text: #0b0b0b; --text-2: #52514e; --muted: #8a8984; --grid: #e4e3df;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --blue-dark: #184f95; --red: #b83232; --neutral: #a8a7a2;
+  --good: #1a7f37; --warn: #9a6700; --bad: #cf222e; --accent: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #111110; --surface: #1a1a19; --surface-2: #232321; --border: #33332f;
+    --text: #f0efec; --text-2: #c3c2b7; --muted: #8f8e86; --grid: #33332f;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --blue-dark: #6da7ec; --red: #e66767; --neutral: #6f6e68;
+    --good: #3fb950; --warn: #d29922; --bad: #f85149; --accent: #3987e5;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111110; --surface: #1a1a19; --surface-2: #232321; --border: #33332f;
+  --text: #f0efec; --text-2: #c3c2b7; --muted: #8f8e86; --grid: #33332f;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --blue-dark: #6da7ec; --red: #e66767; --neutral: #6f6e68;
+  --good: #3fb950; --warn: #d29922; --bad: #f85149; --accent: #3987e5;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+.bar { max-width: 1400px; margin: 0 auto; padding: 12px 16px 0; }
+.title-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+h1 { font-size: 18px; margin: 0; }
+.sub { color: var(--text-2); font-size: 12px; }
+.spacer { flex: 1; }
+button.theme { background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 12px; }
+nav { display: flex; gap: 4px; margin-top: 10px; overflow-x: auto; }
+nav button { background: none; border: none; color: var(--text-2); padding: 8px 12px; cursor: pointer;
+  border-bottom: 2px solid transparent; font-size: 14px; white-space: nowrap; }
+nav button.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+main { max-width: 1400px; margin: 0 auto; padding: 16px; }
+section.tab { display: none; }
+section.tab.active { display: block; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.card h2 { font-size: 14px; margin: 0 0 2px; }
+.card .note { color: var(--text-2); font-size: 12px; margin: 0 0 8px; }
+.c3 { grid-column: span 3; } .c4 { grid-column: span 4; } .c5 { grid-column: span 5; }
+.c6 { grid-column: span 6; } .c7 { grid-column: span 7; } .c8 { grid-column: span 8; } .c12 { grid-column: span 12; }
+@media (max-width: 900px) { .c3, .c4, .c5, .c6, .c7, .c8 { grid-column: span 12; } }
+.kpis { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.kpi .label { color: var(--text-2); font-size: 12px; }
+.kpi .value { font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.kpi .hint { color: var(--muted); font-size: 11px; }
+.filters { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.filters label { font-size: 12px; color: var(--text-2); display: flex; gap: 6px; align-items: center; }
+select, input[type=text], input[type=search] { background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-size: 13px; min-width: 0; }
+input[type=search], input[type=text] { width: 260px; max-width: 100%; }
+.chart { width: 100%; height: 320px; }
+.chart.tall { height: 420px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td.wrap { white-space: normal; }
+th { color: var(--text-2); font-weight: 600; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--surface); }
+th.num, td.num { text-align: right; }
+tr.click { cursor: pointer; }
+tr.click:hover td { background: var(--surface-2); }
+.tablewrap { max-height: 420px; overflow: auto; border: 1px solid var(--border); border-radius: 8px; }
+.chip { display: inline-flex; gap: 4px; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: 11.5px;
+  border: 1px solid currentColor; }
+.chip.PASS, .chip.high-ok { color: var(--good); } .chip.WARN, .chip.medium { color: var(--warn); }
+.chip.FAIL, .chip.high { color: var(--bad); } .chip.low { color: var(--good); }
+.cols { display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+ol.recs { margin: 0; padding-left: 20px; } ol.recs li { margin: 3px 0; }
+.code { font-family: ui-monospace, Consolas, monospace; color: var(--muted); font-size: 11.5px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 999px; padding: 2px 4px 2px 10px; margin: 2px; font-size: 12px; }
+.pill button { border: none; background: none; color: var(--text-2); cursor: pointer; font-size: 14px; }
+.muted { color: var(--text-2); }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.seg button { background: var(--surface); color: var(--text-2); border: none; padding: 5px 10px; cursor: pointer; font-size: 12px; }
+.seg button.on { background: var(--accent); color: #fff; }
+footer { max-width: 1400px; margin: 0 auto; padding: 8px 16px 24px; color: var(--muted); font-size: 11.5px; }
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="title-row">
+    <h1>Online Retail II · Sales &amp; Customer Dashboard</h1>
+    <span class="sub" id="period"></span>
+    <span class="spacer"></span>
+    <button class="theme" id="themeBtn" aria-label="Toggle light or dark theme">Theme</button>
+  </div>
+  <nav id="nav">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="customers">Customers</button>
+    <button data-tab="products">Products &amp; baskets</button>
+    <button data-tab="recommender">Recommender</button>
+    <button data-tab="pipeline">Data pipeline</button>
+  </nav>
+</div></header>
+
+<main>
+<!-- ============================ OVERVIEW ============================ -->
+<section class="tab active" id="tab-overview">
+  <div class="filters"><label>Country <select id="countrySel"></select></label>
+    <span class="muted" style="font-size:12px">Measure: effective product sales (sales of products, excluding orders that were fully cancelled later).</span></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid">
+    <div class="card c8"><h2>Monthly sales, year over year</h2><p class="note" id="yoyNote"></p><div class="chart" id="chMonthly"></div></div>
+    <div class="card c4"><h2>Top 10 non-UK countries</h2><p class="note">United Kingdom shown in the KPI filter.</p><div class="chart" id="chCountries"></div></div>
+    <div class="card c6"><h2>Invoices by weekday and hour</h2><p class="note">All countries, 2 years. The shop does not trade on Saturdays.</p><div class="chart" id="chHeat"></div></div>
+    <div class="card c6"><h2>Active customers per month</h2><p class="note">New = first purchase that month.</p><div class="chart" id="chNewRet"></div></div>
+    <div class="card c12"><h2>Cancelled value as % of gross product sales</h2><p class="note">"Fully reversed" = order lines cancelled in full later (excluded from effective sales).</p><div class="chart" id="chCanc"></div></div>
+  </div>
+</section>
+
+<!-- ============================ CUSTOMERS ============================ -->
+<section class="tab" id="tab-customers">
+  <div class="grid">
+    <div class="card c7"><h2>RFM segments</h2><p class="note">Click a bar to filter the customer table.</p><div class="chart" id="chRfm"></div></div>
+    <div class="card c5"><h2>K-Means clusters (k = 3)</h2><p class="note">Medians per cluster; behavioural features, standardised.</p><div id="clusterTable"></div></div>
+    <div class="card c4"><h2>Churn model quality</h2><p class="note">Test snapshot 2011-09-01, churn = no purchase in next 90 days.</p><div class="chart" id="chChurnAuc"></div></div>
+    <div class="card c4"><h2>Churn rate by recency</h2><p class="note">Test snapshot, actual outcome.</p><div class="chart" id="chChurnRec"></div></div>
+    <div class="card c4"><h2>Current churn risk</h2><p class="note">Scored at 2011-12-10; bands by rank (top 20% = high).</p><div class="chart" id="chRisk"></div></div>
+    <div class="card c12"><h2>Customers</h2>
+      <div class="filters">
+        <label>Segment <select id="fSeg"></select></label>
+        <label>Cluster <select id="fClu"></select></label>
+        <label>Churn risk <select id="fRisk"></select></label>
+        <label>Search <input type="search" id="fCust" placeholder="customer id or country"></label>
+        <span class="muted" id="custCount" style="font-size:12px"></span>
+      </div>
+      <p class="note">Click a row to open that customer's recommendations. Customer ids are pseudonymous numbers.</p>
+      <div class="tablewrap" id="custTable"></div></div>
+  </div>
+</section>
+
+<!-- ============================ PRODUCTS ============================ -->
+<section class="tab" id="tab-products">
+  <div class="grid">
+    <div class="card c6"><h2>Top 15 products</h2><p class="note">Effective sales, 2 years.</p><div class="chart tall" id="chTopProd"></div></div>
+    <div class="card c6"><h2>Biggest changes, Jan-Nov 2011 vs 2010</h2><p class="note">"New" = no sales in Jan-Nov 2010.</p><div class="chart tall" id="chGrowth"></div></div>
+    <div class="card c12"><h2>Product affinity explorer</h2>
+      <div class="filters"><label>Product <input type="search" id="affSearch" list="prodList" placeholder="type a product name or stock code"></label>
+        <span class="muted" style="font-size:12px">Association rules (FP-Growth, min support 1%) and similar products (item-based CF).</span></div>
+      <datalist id="prodList"></datalist>
+      <div class="grid"><div class="c7" style="min-width:0"><h2 style="font-size:13px">Rules: customers who buy it also buy…</h2><div class="tablewrap" id="affRules"></div></div>
+      <div class="c5" style="min-width:0"><h2 style="font-size:13px">Most similar products (cosine)</h2><div class="tablewrap" id="affSim"></div></div></div>
+    </div>
+    <div class="card c6"><h2>Seasonal index by month</h2><p class="note">Month revenue / mean month of that year (Jan-Nov).</p><div class="chart" id="chSeason"></div></div>
+    <div class="card c6"><h2>Christmas-named products, share of revenue</h2><p class="note">Keyword rule: CHRISTMAS, XMAS, ADVENT.</p><div class="chart" id="chXmas"></div></div>
+  </div>
+</section>
+
+<!-- ============================ RECOMMENDER ============================ -->
+<section class="tab" id="tab-recommender">
+  <div class="grid">
+    <div class="card c12"><h2>Offline evaluation @10</h2>
+      <p class="note">Train before 2011-09-01, test 2011-09-01..12-09. <span class="seg" id="modeSeg"><button data-mode="all" class="on">All items</button><button data-mode="new">New to customer</button></span></p>
+      <div class="chart" id="chRec"></div><p class="note" id="bootNote"></p></div>
+    <div class="card c12"><h2>Recommendations for a customer</h2>
+      <div class="filters"><label>Customer id <input type="search" id="recCust" list="custList" placeholder="e.g. 12346"></label>
+        <span class="muted" id="recInfo" style="font-size:12px"></span></div>
+      <datalist id="custList"></datalist>
+      <div class="cols"><div><h2 style="font-size:13px">Recently bought</h2><ol class="recs" id="recRecent"></ol></div>
+        <div><h2 style="font-size:13px">ALS (implicit)</h2><ol class="recs" id="recAls"></ol></div>
+        <div><h2 style="font-size:13px">Item-based CF</h2><ol class="recs" id="recCf"></ol></div></div>
+      <p class="note" style="margin-top:8px">Models refitted on all data; lists exclude items the customer already bought.</p></div>
+    <div class="card c12"><h2>Basket builder (new customer / cold start)</h2>
+      <p class="note">Add a few products; scores = sum of item-CF similarities to the basket (top-15 neighbours per product). ALS cannot score a customer it has not seen.</p>
+      <div class="filters"><label>Add product <input type="search" id="bkInput" list="prodList" placeholder="type a product name or stock code"></label>
+        <button class="theme" id="bkClear">Clear</button></div>
+      <div id="bkPills"></div><ol class="recs" id="bkRecs" style="margin-top:8px"></ol></div>
+  </div>
+</section>
+
+<!-- ============================ PIPELINE ============================ -->
+<section class="tab" id="tab-pipeline">
+  <div class="grid">
+    <div class="card c12"><h2>How the data flows</h2><p class="note" id="archNote"></p></div>
+    <div class="card c6"><h2>Cleaning steps</h2><div class="chart" id="chClean"></div></div>
+    <div class="card c6"><h2>Hive tables (database retail)</h2><div class="tablewrap" id="hiveTable"></div></div>
+    <div class="card c6"><h2>Reconciliation: pandas vs Spark/Hive</h2><p class="note" id="recoNote"></p><div class="tablewrap" id="recoTable"></div></div>
+    <div class="card c6"><h2>Data quality checks (raw data)</h2><div class="tablewrap" id="qualTable"></div></div>
+  </div>
+</section>
+</main>
+<footer>Source: UCI Machine Learning Repository, Online Retail II (CC BY 4.0). Every number is computed by the project pipeline (Spark + Hive local) and exported by src/13_export_dashboard.py.</footer>
+
+<script>
+window.addEventListener("error", function (e) {
+  var b = document.createElement("div");
+  b.setAttribute("role", "alert");
+  b.style.cssText = "background:#cf222e;color:#fff;padding:8px 16px;font:13px system-ui";
+  b.textContent = "Dashboard error: " + (e.message || e.error);
+  document.body.insertBefore(b, document.body.firstChild);
+});
+</script>
+<script>/*__PLOTLY__*/</script>
+<script>const D = /*__DATA__*/;</script>
+<script>
+(function () {
+"use strict";
+// ---------------------------------------------------------------- helpers
+const $ = (id) => document.getElementById(id);
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fmtInt = (x) => x == null || isNaN(x) ? "–" : Math.round(x).toLocaleString("en-GB");
+const gbp = (x) => {
+  if (x == null || isNaN(x)) return "–";
+  const s = x < 0 ? "-" : "", a = Math.abs(x);
+  if (a >= 1e6) return s + "£" + (a / 1e6).toFixed(2) + "M";
+  if (a >= 1e3) return s + "£" + (a / 1e3).toFixed(a >= 1e5 ? 0 : 1) + "k";
+  return s + "£" + a.toFixed(0);
+};
+const pct = (x, d = 1) => x == null || isNaN(x) ? "–" : (x).toFixed(d) + "%";
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+// capitalise words, but not the letter after an apostrophe ("Poppy's", not "Poppy'S")
+const title = (s) => String(s ?? "").toLowerCase().replace(/(^|[\s\-\/(+,.&])([a-z])/g, (m, p, c) => p + c.toUpperCase());
+const numOrText = (v) => (typeof v === "number" || /^-?\d+(\.\d+)?$/.test(String(v))) ? Number(v).toLocaleString("en-GB") : esc(v);
+const desc = (code) => D.desc[code] ? title(D.desc[code]) : code;
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const SEG_ORDER = ["Champions","Loyal customers","Potential loyalists","New customers","Promising",
+  "Need attention","About to sleep","At risk","Can't lose","Hibernating"];
+const MODEL_LABEL = {pop_all: "Popularity (all)", pop_recent: "Popularity (90 days)", item_cf: "Item-based CF", als: "ALS (implicit)"};
+const MODELS = ["pop_all", "pop_recent", "item_cf", "als"];
+
+function layout(extra) {
+  const L = {
+    paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+    font: {family: "system-ui, Segoe UI, Roboto, sans-serif", size: 12, color: css("--text-2")},
+    margin: {l: 56, r: 16, t: 8, b: 40}, showlegend: false,
+    xaxis: {gridcolor: css("--grid"), zerolinecolor: css("--grid"), linecolor: css("--border"), automargin: true},
+    yaxis: {gridcolor: css("--grid"), zerolinecolor: css("--grid"), linecolor: css("--border"), automargin: true},
+    legend: {orientation: "h", y: 1.12, x: 0, font: {color: css("--text")}},
+    hoverlabel: {bgcolor: css("--surface"), bordercolor: css("--border"), font: {color: css("--text")}},
+  };
+  return Object.assign(L, extra || {});
+}
+const CFG = {displaylogo: false, responsive: true, modeBarButtonsToRemove: ["lasso2d", "select2d"]};
+const plot = (id, data, extra) => Plotly.react($(id), data, layout(extra), CFG);
+const series = () => [css("--s1"), css("--s2"), css("--s3"), css("--s4")];
+
+function table(el, rows, cols, opts = {}) {
+  // cols: [{key, label, num, fmt, cls}] ; simple client-side sort
+  const state = el._sort || {key: opts.sortKey, dir: opts.sortDir || -1};
+  el._sort = state;
+  let r = rows.slice();
+  if (state.key) r.sort((a, b) => {
+    const x = a[state.key], y = b[state.key];
+    if (x == null) return 1; if (y == null) return -1;
+    return (x > y ? 1 : x < y ? -1 : 0) * state.dir;
+  });
+  const limit = opts.limit || r.length;
+  const head = cols.map((c) => `<th class="${c.num ? "num" : ""}" data-k="${c.key}">${esc(c.label)}${state.key === c.key ? (state.dir > 0 ? " ▲" : " ▼") : ""}</th>`).join("");
+  const body = r.slice(0, limit).map((row, i) => `<tr class="${opts.onClick ? "click" : ""}" data-i="${i}">` + cols.map((c) => {
+    const v = row[c.key];
+    const txt = c.fmt ? c.fmt(v, row) : esc(v);
+    return `<td class="${c.num ? "num" : ""} ${c.cls || ""}">${txt}</td>`;
+  }).join("") + "</tr>").join("");
+  el.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>` +
+    (r.length > limit ? `<p class="note" style="padding:6px 8px">Showing ${limit} of ${fmtInt(r.length)} rows.</p>` : "");
+  el.querySelectorAll("th").forEach((th) => th.onclick = () => {
+    const k = th.dataset.k; state.dir = state.key === k ? -state.dir : -1; state.key = k; table(el, rows, cols, opts);
+  });
+  if (opts.onClick) el.querySelectorAll("tbody tr").forEach((tr) => tr.onclick = () => opts.onClick(r[+tr.dataset.i]));
+}
+
+// ---------------------------------------------------------------- overview
+function renderOverview() {
+  const sel = $("countrySel").value || "__all";
+  const rows = D.monthly_country.filter((r) => sel === "__all" ? true :
+    sel === "__nonuk" ? r.country !== "United Kingdom" : r.country === sel);
+  const byMonth = {};
+  rows.forEach((r) => { byMonth[r.year_month] = (byMonth[r.year_month] || 0) + r.revenue; });
+
+  // KPIs
+  let k;
+  if (sel === "__all") {
+    k = {revenue: D.kpis.revenue, invoices: D.kpis.invoices, customers: D.kpis.customers, hint: ""};
+  } else {
+    const cs = D.countries.filter((c) => sel === "__nonuk" ? c.country !== "United Kingdom" : c.country === sel);
+    k = {revenue: cs.reduce((a, c) => a + c.revenue, 0), invoices: cs.reduce((a, c) => a + c.invoices, 0),
+         customers: cs.reduce((a, c) => a + c.customers, 0),
+         hint: sel === "__nonuk" ? "customers summed over countries (13 customers buy from 2 countries)" : ""};
+  }
+  const share = 100 * k.revenue / D.kpis.revenue;
+  const yr = (y) => Object.entries(byMonth).filter(([m]) => m.startsWith(y) && +m.slice(5) <= 11).reduce((a, [, v]) => a + v, 0);
+  const g = 100 * (yr("2011") / yr("2010") - 1);
+  $("kpis").innerHTML = [
+    ["Effective sales", gbp(k.revenue), sel === "__all" ? "Dec 2009 – Dec 2011" : pct(share) + " of total"],
+    ["Invoices", fmtInt(k.invoices), ""],
+    ["Customers (with id)", fmtInt(k.customers), k.hint],
+    ["Avg invoice value", gbp(k.revenue / k.invoices), ""],
+    ["Jan–Nov 2011 vs 2010", (isFinite(g) ? (g >= 0 ? "+" : "") + g.toFixed(1) + "%" : "–"), "year-over-year growth"],
+  ].map(([l, v, h]) => `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="hint">${esc(h)}</div></div>`).join("");
+
+  const s = series();
+  const tr = [2010, 2011].map((y, i) => {
+    const xs = [], ys = [];
+    for (let m = 1; m <= (y === 2011 ? 11 : 12); m++) {
+      const key = `${y}-${String(m).padStart(2, "0")}`;
+      xs.push(MONTHS[m - 1]); ys.push(byMonth[key] || 0);
+    }
+    return {x: xs, y: ys, name: String(y), type: "scatter", mode: "lines+markers", line: {color: s[i], width: 2},
+            marker: {size: 7}, hovertemplate: "%{x} " + y + ": £%{y:,.0f}<extra></extra>"};
+  });
+  tr.push({x: ["Dec"], y: [byMonth["2009-12"] || 0], name: "Dec 2009", type: "scatter", mode: "markers",
+           marker: {size: 9, color: s[2]}, hovertemplate: "Dec 2009: £%{y:,.0f}<extra></extra>"});
+  plot("chMonthly", tr, {showlegend: true, yaxis: Object.assign(layout().yaxis, {tickprefix: "£", tickformat: "~s"}),
+                         xaxis: Object.assign(layout().xaxis, {categoryorder: "array", categoryarray: MONTHS})});
+  $("yoyNote").textContent = "December 2011 is a partial month (9 days) and is not shown.";
+}
+
+function renderOverviewStatic() {
+  const s = series();
+  const top = D.countries.filter((c) => c.country !== "United Kingdom").slice(0, 10).reverse();
+  plot("chCountries", [{type: "bar", orientation: "h", x: top.map((c) => c.revenue), y: top.map((c) => c.country),
+    marker: {color: s[0]}, text: top.map((c) => gbp(c.revenue)), textposition: "outside", cliponaxis: false,
+    hovertemplate: "%{y}: £%{x:,.0f}<extra></extra>"}],
+    {margin: {l: 100, r: 50, t: 8, b: 30}, xaxis: Object.assign(layout().xaxis, {tickprefix: "£", tickformat: "~s"})});
+
+  const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  const hours = [...new Set(D.weekday_hour.map((r) => r.hour))].sort((a, b) => a - b);
+  const z = days.map((_, d) => hours.map((h) => (D.weekday_hour.find((r) => r.weekday_num === d + 1 && r.hour === h) || {}).invoices || 0));
+  plot("chHeat", [{type: "heatmap", z, x: hours, y: days, colorscale: [[0, css("--surface-2")], [1, css("--blue-dark")]],
+    hovertemplate: "%{y} %{x}:00 – %{z:,} invoices<extra></extra>", colorbar: {thickness: 10, outlinewidth: 0}}],
+    {yaxis: Object.assign(layout().yaxis, {autorange: "reversed"}), xaxis: Object.assign(layout().xaxis, {dtick: 1, title: {text: "Hour"}})});
+
+  const nr = D.new_vs_returning;
+  plot("chNewRet", [
+    {type: "bar", x: nr.map((r) => r.year_month), y: nr.map((r) => r.returning_customers), name: "Returning", marker: {color: s[0]}},
+    {type: "bar", x: nr.map((r) => r.year_month), y: nr.map((r) => r.new_customers), name: "New", marker: {color: s[1]}},
+  ], {barmode: "stack", showlegend: true, bargap: 0.15});
+
+  const c = D.cancellations;
+  plot("chCanc", [
+    {type: "bar", x: c.map((r) => r.year_month), y: c.map((r) => r.reversed_pct_of_gross), name: "Fully reversed lines", marker: {color: s[0]},
+     hovertemplate: "%{x}: %{y:.1f}%<extra>fully reversed</extra>"},
+    {type: "bar", x: c.map((r) => r.year_month), y: c.map((r) => r.partial_cancel_pct_of_gross), name: "Other cancellations", marker: {color: s[1]},
+     hovertemplate: "%{x}: %{y:.1f}%<extra>other</extra>"},
+  ], {barmode: "stack", showlegend: true, bargap: 0.15, yaxis: Object.assign(layout().yaxis, {ticksuffix: "%"})});
+}
+
+// ---------------------------------------------------------------- customers
+const custFilter = {seg: "", clu: "", risk: "", q: ""};
+function renderCustomers() {
+  const s = series();
+  const seg = SEG_ORDER.map((n) => D.rfm_segments.find((r) => r.segment === n)).filter(Boolean).reverse();
+  plot("chRfm", [
+    {type: "bar", orientation: "h", y: seg.map((r) => r.segment), x: seg.map((r) => r.customers_pct), name: "% of customers", marker: {color: s[0]},
+     hovertemplate: "%{y}: %{x:.1f}% of customers<extra></extra>"},
+    {type: "bar", orientation: "h", y: seg.map((r) => r.segment), x: seg.map((r) => r.revenue_pct), name: "% of net revenue", marker: {color: s[1]},
+     hovertemplate: "%{y}: %{x:.1f}% of revenue<extra></extra>"},
+  ], {barmode: "group", showlegend: true, margin: {l: 130, r: 16, t: 8, b: 30}, xaxis: Object.assign(layout().xaxis, {ticksuffix: "%"})});
+  $("chRfm").on("plotly_click", (ev) => { custFilter.seg = ev.points[0].y; $("fSeg").value = custFilter.seg; renderCustTable(); });
+
+  table($("clusterTable"), D.clusters, [
+    {key: "cluster", label: "Cluster", fmt: (v) => "C" + v},
+    {key: "customers_pct", label: "% cust.", num: true, fmt: (v) => pct(v, 0)},
+    {key: "revenue_pct", label: "% rev.", num: true, fmt: (v) => pct(v, 0)},
+    {key: "recency_median", label: "Recency (d)", num: true, fmt: fmtInt},
+    {key: "frequency_median", label: "Invoices", num: true, fmt: fmtInt},
+    {key: "n_products_median", label: "Products", num: true, fmt: fmtInt},
+    {key: "peak_season_share_mean", label: "Sep–Dec share", num: true, fmt: (v) => pct(100 * v, 0)},
+  ], {sortKey: "cluster", sortDir: 1});
+  $("clusterTable").insertAdjacentHTML("beforeend",
+    `<p class="note" style="margin-top:8px">C0 regular high-value buyers · C1 lapsed (about a year without purchase) · C2 seasonal / recent (Sep–Dec heavy, short tenure).</p>`);
+
+  const cm = D.churn_metrics.filter((r) => r.model !== "no_skill (predict churn rate)");
+  const lab = {logistic_regression: "Logistic regression", random_forest: "Random forest", baseline_recency_only: "Recency only"};
+  plot("chChurnAuc", [{type: "bar", x: cm.map((r) => lab[r.model] || r.model), y: cm.map((r) => r.roc_auc), marker: {color: [s[0], s[0], css("--neutral")]},
+    text: cm.map((r) => r.roc_auc.toFixed(3)), textposition: "outside", cliponaxis: false, hovertemplate: "%{x}: ROC AUC %{y:.3f}<extra></extra>"}],
+    {yaxis: Object.assign(layout().yaxis, {range: [0.5, 0.8], title: {text: "ROC AUC"}})});
+  const order = ["0-30", "31-90", "91-180", "181-270"];
+  const cb = order.map((b) => D.churn_by_recency.find((r) => r.recency_band === b)).filter(Boolean);
+  plot("chChurnRec", [{type: "bar", x: cb.map((r) => r.recency_band + " d"), y: cb.map((r) => 100 * r.churn_rate), marker: {color: s[0]},
+    text: cb.map((r) => (100 * r.churn_rate).toFixed(0) + "%"), textposition: "outside", cliponaxis: false,
+    customdata: cb.map((r) => r.customers), hovertemplate: "%{x}: %{y:.1f}% churned (%{customdata:,} customers)<extra></extra>"}],
+    {yaxis: Object.assign(layout().yaxis, {ticksuffix: "%", range: [0, 80]}), xaxis: Object.assign(layout().xaxis, {title: {text: "Days since last purchase"}})});
+  const rb = ["high", "medium", "low"].map((b) => ({b, n: D.customers.filter((c) => c.risk_band === b).length}));
+  plot("chRisk", [{type: "bar", x: rb.map((r) => r.b), y: rb.map((r) => r.n), marker: {color: [css("--bad"), css("--warn"), css("--good")]},
+    text: rb.map((r) => fmtInt(r.n)), textposition: "outside", cliponaxis: false, hovertemplate: "%{x}: %{y:,} customers<extra></extra>"}],
+    {yaxis: Object.assign(layout().yaxis, {title: {text: "Customers"}})});
+  renderCustTable();
+}
+
+function renderCustTable() {
+  const q = custFilter.q.trim().toLowerCase();
+  const rows = D.customers.filter((c) => (!custFilter.seg || c.segment === custFilter.seg) &&
+    (custFilter.clu === "" || String(c.cluster) === custFilter.clu) && (!custFilter.risk || c.risk_band === custFilter.risk) &&
+    (!q || String(c.customer_id).includes(q) || (c.country || "").toLowerCase().includes(q)));
+  $("custCount").textContent = fmtInt(rows.length) + " customers";
+  table($("custTable"), rows, [
+    {key: "customer_id", label: "Customer"}, {key: "country", label: "Country"}, {key: "segment", label: "RFM segment"},
+    {key: "cluster", label: "Cluster", fmt: (v) => v == null ? "–" : "C" + v},
+    {key: "recency_days", label: "Recency (d)", num: true, fmt: fmtInt}, {key: "frequency", label: "Invoices", num: true, fmt: fmtInt},
+    {key: "monetary", label: "Net revenue", num: true, fmt: gbp},
+    {key: "churn_probability", label: "Churn score", num: true, fmt: (v) => v == null ? "–" : v.toFixed(2)},
+    {key: "risk_band", label: "Risk", fmt: (v) => v ? `<span class="chip ${v}">${v === "high" ? "▲" : v === "medium" ? "■" : "●"} ${v}</span>` : "–"},
+  ], {sortKey: "monetary", limit: 300, onClick: (r) => { showTab("recommender"); $("recCust").value = r.customer_id; renderRecCustomer(); }});
+}
+
+// ---------------------------------------------------------------- products
+function renderProducts() {
+  const s = series();
+  const t = D.top_products.slice(0, 15).reverse();
+  plot("chTopProd", [{type: "bar", orientation: "h", y: t.map((r) => title(r.description)), x: t.map((r) => r.revenue), marker: {color: s[0]},
+    customdata: t.map((r) => r.invoices), text: t.map((r) => gbp(r.revenue)), textposition: "outside", cliponaxis: false,
+    hovertemplate: "%{y}<br>£%{x:,.0f} · %{customdata:,} invoices<extra></extra>"}],
+    {margin: {l: 230, r: 50, t: 8, b: 30}, xaxis: Object.assign(layout().xaxis, {tickprefix: "£", tickformat: "~s"})});
+  const gr = D.growth.slice().sort((a, b) => a.change - b.change);
+  plot("chGrowth", [{type: "bar", orientation: "h", y: gr.map((r) => title(r.description)), x: gr.map((r) => r.change),
+    marker: {color: gr.map((r) => r.change < 0 ? css("--blue-dark") : css("--red"))},
+    customdata: gr.map((r) => [r.rev_2010, r.rev_2011, r.status.replace(/_/g, " ")]),
+    hovertemplate: "%{y}<br>2010: £%{customdata[0]:,.0f} → 2011: £%{customdata[1]:,.0f}<br>%{customdata[2]}<extra></extra>"}],
+    {margin: {l: 230, r: 16, t: 8, b: 30}, xaxis: Object.assign(layout().xaxis, {tickprefix: "£", tickformat: "~s"}),
+     yaxis: Object.assign(layout().yaxis, {tickfont: {size: 10}})});
+  const si = D.seasonal_index;
+  plot("chSeason", [2010, 2011].map((y, i) => ({type: "scatter", mode: "lines+markers", x: si.map((r) => MONTHS[r.month - 1]),
+    y: si.map((r) => r["index_" + y]), name: String(y), line: {color: s[i], width: 2}, marker: {size: 6},
+    hovertemplate: "%{x} " + y + ": %{y:.2f}<extra></extra>"})), {showlegend: true,
+    shapes: [{type: "line", xref: "paper", x0: 0, x1: 1, y0: 1, y1: 1, line: {color: css("--neutral"), dash: "dash", width: 1}}]});
+  const xm = D.christmas_share;
+  plot("chXmas", [{type: "bar", x: xm.map((r) => r.year_month), y: xm.map((r) => r.xmas_share_pct), marker: {color: s[0]},
+    hovertemplate: "%{x}: %{y:.1f}%<extra></extra>"}], {yaxis: Object.assign(layout().yaxis, {ticksuffix: "%"}), bargap: 0.15});
+}
+
+function productOptions() {
+  const codes = Object.keys(D.neighbours);
+  $("prodList").innerHTML = codes.map((c) => `<option value="${esc(desc(c))} (${esc(c)})">`).join("");
+}
+const codeFromInput = (v) => { const m = /\(([^()]+)\)\s*$/.exec(v || ""); return m ? m[1] : (D.desc[(v || "").trim().toUpperCase()] ? v.trim().toUpperCase() : null); };
+
+function renderAffinity() {
+  const code = codeFromInput($("affSearch").value);
+  if (!code) { $("affRules").innerHTML = `<p class="note" style="padding:8px">Pick a product from the list (e.g. Poppy's Playhouse Bedroom).</p>`; $("affSim").innerHTML = ""; return; }
+  const rules = D.rules.filter((r) => r.antecedent.split(";").includes(code));
+  table($("affRules"), rules, [
+    {key: "antecedent_desc", label: "If basket has", fmt: (v) => esc(title(v)), cls: "wrap"},
+    {key: "consequent_desc", label: "→ also", fmt: (v) => esc(title(v)), cls: "wrap"},
+    {key: "confidence", label: "Confidence", num: true, fmt: (v) => pct(100 * v, 0)},
+    {key: "lift", label: "Lift", num: true, fmt: (v) => v.toFixed(1)},
+    {key: "support_invoices", label: "Invoices", num: true, fmt: fmtInt},
+  ], {sortKey: "lift"});
+  if (!rules.length) $("affRules").innerHTML = `<p class="note" style="padding:8px">No rule reaches min support 1% for this product; see similar products instead.</p>`;
+  const nb = (D.neighbours[code] || []).map(([c, s], i) => ({rank: i + 1, code: c, name: desc(c), sim: s}));
+  table($("affSim"), nb, [{key: "rank", label: "#", num: true}, {key: "name", label: "Product", cls: "wrap"},
+    {key: "sim", label: "Cosine", num: true, fmt: (v) => v.toFixed(3)}], {sortKey: "rank", sortDir: 1});
+}
+
+// ---------------------------------------------------------------- recommender
+let recMode = "all";
+function renderRecMetrics() {
+  const s = series();
+  const mets = ["hit_rate@10", "precision@10", "recall@10", "map@10"];
+  const rows = D.rec_metrics.filter((r) => r.mode === recMode);
+  plot("chRec", MODELS.map((m, i) => {
+    const r = rows.find((x) => x.model === m);
+    return {type: "bar", name: MODEL_LABEL[m], x: mets.map((k) => k.replace("_", " ")), y: mets.map((k) => r[k]), marker: {color: s[i]},
+            text: mets.map((k) => r[k].toFixed(2)), textposition: "outside", cliponaxis: false,
+            hovertemplate: MODEL_LABEL[m] + " %{x}: %{y:.3f}<extra></extra>"};
+  }), {barmode: "group", showlegend: true, yaxis: Object.assign(layout().yaxis, {range: [0, recMode === "all" ? 0.85 : 0.5]})});
+  const b = D.rec_bootstrap.find((r) => r.mode === recMode && r.model_a === "als" && r.model_b === "item_cf");
+  const n = rows[0] ? rows[0].users : 0;
+  $("bootNote").textContent = `${fmtInt(n)} customers. ALS − item-CF MAP@10 = ${b.mean_diff.toFixed(3)} (95% bootstrap CI ${b.ci95_low.toFixed(3)} to ${b.ci95_high.toFixed(3)}).` +
+    (recMode === "new" ? " For items new to the customer the gap is small." : " Most of ALS's lead comes from repeat purchases.");
+}
+
+function renderRecCustomer() {
+  const id = ($("recCust").value || "").trim();
+  const r = D.recs[id];
+  const li = (codes) => codes.length ? codes.map((c) => `<li>${esc(desc(c))} <span class="code">${esc(c)}</span></li>`).join("") : "<li class='muted'>–</li>";
+  if (!r) { $("recInfo").textContent = id ? "Unknown customer id." : ""; ["recRecent", "recAls", "recCf"].forEach((x) => $(x).innerHTML = ""); return; }
+  const c = D.customers.find((x) => String(x.customer_id) === id);
+  $("recInfo").textContent = c ? `${c.country} · ${c.segment} · cluster C${c.cluster ?? "–"} · ${fmtInt(c.frequency)} invoices · ${gbp(c.monetary)} · churn risk ${c.risk_band || "–"}` : "";
+  $("recRecent").innerHTML = li(r.recent); $("recAls").innerHTML = li(r.als); $("recCf").innerHTML = li(r.item_cf);
+}
+
+const basket = [];
+function renderBasket() {
+  $("bkPills").innerHTML = basket.map((c, i) => `<span class="pill">${esc(desc(c))}<button aria-label="remove" data-i="${i}">×</button></span>`).join("") ||
+    `<span class="muted" style="font-size:12px">Basket is empty.</span>`;
+  $("bkPills").querySelectorAll("button").forEach((b) => b.onclick = () => { basket.splice(+b.dataset.i, 1); renderBasket(); });
+  const score = {};
+  basket.forEach((c) => (D.neighbours[c] || []).forEach(([n, s]) => { if (!basket.includes(n)) score[n] = (score[n] || 0) + s; }));
+  const top = Object.entries(score).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  $("bkRecs").innerHTML = top.map(([c, s]) => `<li>${esc(desc(c))} <span class="code">${esc(c)} · score ${s.toFixed(2)}</span></li>`).join("");
+}
+
+// ---------------------------------------------------------------- pipeline
+function renderPipeline() {
+  const p = D.pipeline;
+  $("archNote").innerHTML = `Excel (2 sheets) → local landing CSV → Spark (local mode) quality checks and ETL → <b>Hive local</b> star schema
+    (embedded Derby metastore, Parquet warehouse; <b>no Hadoop cluster, no HDFS</b>) → Spark SQL / MLlib models → CSV/JSON → this page.
+    ALS parameters used here: rank ${D.meta.als_params.rank}, regParam ${D.meta.als_params.regParam}, alpha ${D.meta.als_params.alpha}.`;
+  const cl = p.cleaning_log;
+  plot("chClean", [{type: "bar", x: cl.map((r) => r.step.replace(/^\d+ /, "")), y: cl.map((r) => r.rows_after), marker: {color: css("--s1")},
+    text: cl.map((r) => fmtInt(r.rows_after) + (r.rows_removed ? ` (−${fmtInt(r.rows_removed)})` : "")), textposition: "outside", cliponaxis: false,
+    hovertemplate: "%{x}<br>%{y:,} rows<extra></extra>"}], {yaxis: Object.assign(layout().yaxis, {range: [1e6, 1.08e6], tickformat: ",d"}),
+    xaxis: Object.assign(layout().xaxis, {tickfont: {size: 10}})});
+  table($("hiveTable"), p.hive_tables, [{key: "table", label: "Table"}, {key: "kind", label: "Kind"},
+    {key: "rows", label: "Rows", num: true, fmt: fmtInt}, {key: "partitions", label: "Partitions", num: true}], {});
+  const ok = p.reconciliation.filter((r) => r.match === true || r.match === "True").length;
+  $("recoNote").textContent = `${ok} of ${p.reconciliation.length} metrics match exactly (an independent pandas re-implementation of the cleaning rules).`;
+  table($("recoTable"), p.reconciliation, [{key: "metric", label: "Metric"}, {key: "pandas", label: "pandas", num: true, fmt: numOrText},
+    {key: "spark_hive", label: "Spark/Hive", num: true, fmt: numOrText},
+    {key: "match", label: "Match", fmt: (v) => (v === true || v === "True") ? `<span class="chip PASS">✓ match</span>` : `<span class="chip FAIL">✗ differs</span>`}], {});
+  table($("qualTable"), p.quality, [{key: "check", label: "Check"}, {key: "value", label: "Value", num: true, fmt: numOrText},
+    {key: "status", label: "Status", fmt: (v) => `<span class="chip ${v}">${v === "PASS" ? "✓" : v === "WARN" ? "!" : "✗"} ${v}</span>`},
+    {key: "note", label: "Note", cls: "wrap"}], {});
+}
+
+// ---------------------------------------------------------------- wiring
+const rendered = {};
+const RENDER = {overview: () => { renderOverview(); renderOverviewStatic(); }, customers: renderCustomers,
+  products: () => { renderProducts(); renderAffinity(); }, recommender: () => { renderRecMetrics(); renderRecCustomer(); renderBasket(); },
+  pipeline: renderPipeline};
+function showTab(name) {
+  document.querySelectorAll("nav button").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+  document.querySelectorAll("section.tab").forEach((s) => s.classList.toggle("active", s.id === "tab-" + name));
+  RENDER[name](); rendered[name] = true;
+  window.dispatchEvent(new Event("resize"));
+}
+document.querySelectorAll("nav button").forEach((b) => b.onclick = () => { history.replaceState(null, "", "#" + b.dataset.tab); showTab(b.dataset.tab); });
+
+$("period").textContent = D.meta.period + " · " + D.meta.hive;
+const cs = $("countrySel");
+cs.innerHTML = `<option value="__all">All countries</option><option value="United Kingdom">United Kingdom</option><option value="__nonuk">All non-UK</option>` +
+  D.countries.filter((c) => c.country !== "United Kingdom").slice(0, 20).map((c) => `<option>${esc(c.country)}</option>`).join("");
+cs.onchange = renderOverview;
+$("fSeg").innerHTML = `<option value="">All</option>` + SEG_ORDER.map((s) => `<option>${esc(s)}</option>`).join("");
+$("fClu").innerHTML = `<option value="">All</option>` + D.clusters.map((c) => `<option value="${c.cluster}">C${c.cluster}</option>`).join("");
+$("fRisk").innerHTML = `<option value="">All</option><option>high</option><option>medium</option><option>low</option>`;
+$("fSeg").onchange = (e) => { custFilter.seg = e.target.value; renderCustTable(); };
+$("fClu").onchange = (e) => { custFilter.clu = e.target.value; renderCustTable(); };
+$("fRisk").onchange = (e) => { custFilter.risk = e.target.value; renderCustTable(); };
+$("fCust").oninput = (e) => { custFilter.q = e.target.value; renderCustTable(); };
+productOptions();
+$("custList").innerHTML = Object.keys(D.recs).map((u) => `<option value="${u}">`).join("");
+$("affSearch").onchange = renderAffinity;
+$("recCust").onchange = renderRecCustomer;
+$("modeSeg").querySelectorAll("button").forEach((b) => b.onclick = () => {
+  recMode = b.dataset.mode; $("modeSeg").querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b)); renderRecMetrics(); });
+$("bkInput").onchange = () => { const c = codeFromInput($("bkInput").value); if (c && !basket.includes(c)) basket.push(c); $("bkInput").value = ""; renderBasket(); };
+$("bkClear").onclick = () => { basket.length = 0; renderBasket(); };
+// defaults that make the demo tabs non-empty
+$("affSearch").value = D.desc["22748"] ? `${desc("22748")} (22748)` : "";
+$("recCust").value = String(D.customers.slice().sort((a, b) => b.monetary - a.monetary)[3].customer_id);
+
+let theme = null;
+try { theme = localStorage.getItem("dash-theme"); } catch (e) {}
+if (theme) document.documentElement.setAttribute("data-theme", theme);
+$("themeBtn").onclick = () => {
+  const dark = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() === "#111110";
+  const next = dark ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try { localStorage.setItem("dash-theme", next); } catch (e) {}
+  Object.keys(rendered).forEach((t) => { if (document.getElementById("tab-" + t).classList.contains("active")) RENDER[t](); else delete rendered[t]; });
+};
+const startTab = (location.hash || "").replace("#", "");
+showTab(RENDER[startTab] ? startTab : "overview");
+window.addEventListener("hashchange", () => { const t = location.hash.replace("#", ""); if (RENDER[t]) showTab(t); });
+})();
+</script>
+</body>
+</html>

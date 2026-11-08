@@ -1,0 +1,19 @@
+{
+  "baskets": 39251,
+  "basket_size_mean": 25.12,
+  "basket_size_median": 15,
+  "basket_size_max": 1106,
+  "baskets_with_2plus_items_pct": 91.99,
+  "min_support": 0.01,
+  "min_confidence": 0.2,
+  "frequent_items": 708,
+  "frequent_itemsets": 1359,
+  "rules": 1166,
+  "rules_in_hive": 1166,
+  "rules_single_antecedent": 815,
+  "rules_similar_name": 516,
+  "rules_similar_name_pct_of_single_antecedent": 63.3,
+  "lift_median": 8.4,
+  "lift_max": 51.34,
+  "confidence_median": 0.426
+}

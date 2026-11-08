@@ -1,0 +1,17 @@
+{
+  "customers_clustered": 5832,
+  "customers_excluded_monetary_le_0": 7,
+  "features": [
+    "log_recency",
+    "log_frequency",
+    "log_avg_invoice",
+    "log_n_products",
+    "tenure_days",
+    "peak_season_share"
+  ],
+  "k_chosen": 3,
+  "final_seed": 1,
+  "silhouette_chosen_seed42": 0.4244057600856434,
+  "mean_pairwise_ari_chosen": 0.9965528512838986,
+  "selection_rule": "silhouette within 0.01 of best (k>=3), then max mean ARI"
+}

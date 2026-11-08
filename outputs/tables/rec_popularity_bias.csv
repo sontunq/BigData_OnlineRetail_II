@@ -1,0 +1,5 @@
+model,median_popularity_rank_of_recs,share_recs_in_top100_popular_pct
+pop_all,5.5,100.0
+pop_recent,18.0,60.0
+item_cf,24.0,81.0325621251071
+als,130.0,44.562982005141386

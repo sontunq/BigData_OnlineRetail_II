@@ -1,0 +1,11 @@
+{
+  "customers": 5839,
+  "reference_date": "2011-12-10",
+  "net_monetary_total": 16304418.16,
+  "customers_monetary_le_0": 7,
+  "recency_median_days": 96.0,
+  "frequency_median": 3.0,
+  "monetary_median": 842.41,
+  "corr_spearman_f_m": 0.858,
+  "corr_spearman_r_f": -0.559
+}

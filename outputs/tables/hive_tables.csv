@@ -1,0 +1,6 @@
+table,rows,type,provider,location,serde,partitions
+retail.dim_product,5131,MANAGED,hive,file:/D:/Big%20Data/warehouse/retail.db/dim_product,org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe,0
+retail.dim_customer,5942,MANAGED,hive,file:/D:/Big%20Data/warehouse/retail.db/dim_customer,org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe,0
+retail.dim_country,43,MANAGED,hive,file:/D:/Big%20Data/warehouse/retail.db/dim_country,org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe,0
+retail.dim_date,739,MANAGED,hive,file:/D:/Big%20Data/warehouse/retail.db/dim_date,org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe,0
+retail.fact_sales,1033036,MANAGED,hive,file:/D:/Big%20Data/warehouse/retail.db/fact_sales,org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe,25

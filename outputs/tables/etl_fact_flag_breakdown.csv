@@ -1,0 +1,17 @@
+txn_type,is_product,has_customer,is_reversed,rows,invoices,units,revenue
+adjustment,True,True,False,61,52,14736,0.0
+adjustment,True,False,False,5902,5278,-335399,0.0
+adjustment,False,True,False,9,9,17,0.0
+adjustment,False,False,False,48,48,2097,-147614.08
+cancellation,True,True,False,11407,5486,-63573,-164062.34
+cancellation,True,True,True,6180,2921,-400720,-545927.69
+cancellation,True,False,False,328,123,-3447,-6472.54
+cancellation,False,True,False,652,593,-8174,-297734.74
+cancellation,False,True,True,151,151,-509,-77088.21
+cancellation,False,False,False,386,284,-396,-370765.09
+sale,True,True,False,770416,36329,10098035,16467074.366
+sale,True,True,True,6180,3080,400720,601508.371
+sale,True,False,False,226761,2922,689306,2575278.9
+sale,False,True,False,2678,2623,14688,234316.431
+sale,False,True,True,151,151,509,71905.1
+sale,False,False,False,1726,1623,1889,515115.22

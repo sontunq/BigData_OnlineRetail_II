@@ -1,0 +1,4 @@
+step,rows_before,rows_removed,rows_after
+0 raw landing rows,1067371,0,1067371
+1 drop sheet-1 copy of the 2010-12-01..09 overlap,1067371,22523,1044848
+2 drop exact duplicate rows,1044848,11812,1033036

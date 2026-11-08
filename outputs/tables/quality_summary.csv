@@ -1,0 +1,41 @@
+check,value,status,note
+row_count,1067371,PASS,
+rows_sheet_2009_2010,525461,PASS,
+rows_sheet_2010_2011,541910,PASS,
+missing_customer_id_rows,243007,WARN,"22.77% of rows; kept for revenue, excluded from customer models"
+missing_description_rows,4382,WARN,description filled from dim_product mode
+missing_invoice,0,PASS,
+missing_stock_code,0,PASS,
+missing_quantity,0,PASS,
+missing_invoice_date,0,PASS,
+missing_price,0,PASS,
+missing_country,0,PASS,
+overlap_window_rows_sheet1,22523,WARN,2010-12-01..09 appears in both sheets; ETL drops the sheet-1 copy
+overlap_rows_only_in_sheet1,0,PASS,0 = sheet-1 copy is fully contained in sheet 2
+overlap_rows_only_in_sheet2,0,PASS,
+exact_duplicate_rows_after_overlap_removal,11812,WARN,identical in every column incl. timestamp; dropped by ETL (assumption)
+invoices_with_unknown_format,0,PASS,
+cancellation_rows,19494,WARN,invoice starts with C; negative quantities
+cancellation_rows_with_positive_qty,1,WARN,"C496350: one 'Manual' (code M) line, a non-product adjustment"
+non_cancellation_rows_qty_le_0,3457,WARN,"stock write-offs, mostly without customer"
+price_eq_0_rows,6202,WARN,free items / write-offs; excluded from sales
+price_lt_0_rows,5,WARN,'Adjust bad debt' (invoice A...)
+quantity_min,-80995,PASS,
+quantity_max,80995,PASS,
+price_min,-53594.36,PASS,
+price_max,38970.0,PASS,
+price_with_3_decimals_rows,18,PASS,"kept: price is DECIMAL(12,3)"
+non_product_rows,5913,WARN,25 service/fee/voucher codes; flagged is_product = false
+stock_codes_with_lower_case,183,WARN,upper-cased in ETL
+distinct_product_codes,5106,PASS,
+product_codes_with_multiple_descriptions,1207,WARN,dim_product uses the most frequent
+product_codes_with_multiple_prices,4260,WARN,price varies by time and quantity tier
+distinct_customers,5942,PASS,
+customers_with_multiple_countries,13,WARN,dim_customer uses the most frequent
+distinct_countries,43,PASS,
+first_timestamp,2009-12-01 07:45:00,PASS,
+last_timestamp,2011-12-09 12:50:00,PASS,December 2011 covers only 9 days
+calendar_days_in_range,739,PASS,
+days_with_transactions,604,PASS,
+days_without_transactions,135,WARN,includes Saturdays (shop does not trade) and the Christmas closures
+saturdays_with_transactions,1,PASS,

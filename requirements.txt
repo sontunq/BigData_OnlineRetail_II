@@ -1,0 +1,11 @@
+# Python 3.12, Java 8 (PySpark 3.5 supports Java 8/11/17; PySpark 4.x needs Java 17+)
+pyspark==3.5.3
+pandas==3.0.2
+numpy==2.2.6
+pyarrow==24.0.0
+openpyxl==3.1.5
+scipy==1.17.1
+scikit-learn==1.9.1
+matplotlib==3.11.2
+# only used to obtain the bundled plotly.js (2.35.2) for the HTML dashboard
+plotly==5.24.1
